@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+:root {
+  --background: #dbeafe;
+  --foreground: #0f172a;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.55) 0 5px, transparent 6px),
+    radial-gradient(circle at 78% 15%, rgba(255, 255, 255, 0.5) 0 4px, transparent 5px),
+    radial-gradient(circle at 62% 40%, rgba(255, 255, 255, 0.48) 0 6px, transparent 7px),
+    radial-gradient(circle at 25% 58%, rgba(255, 255, 255, 0.42) 0 7px, transparent 8px),
+    radial-gradient(circle at 86% 68%, rgba(255, 255, 255, 0.5) 0 5px, transparent 6px),
+    radial-gradient(circle at 40% 82%, rgba(255, 255, 255, 0.44) 0 6px, transparent 7px),
+    linear-gradient(160deg, #c7e3ff 0%, #9bc8fb 44%, #7fb6f6 100%);
+  animation: sparklePulse 6s ease-in-out infinite;
+}
+
+body::after {
+  background:
+    radial-gradient(circle at 20% 32%, rgba(191, 219, 254, 0.5) 0 34px, transparent 35px),
+    radial-gradient(circle at 75% 28%, rgba(147, 197, 253, 0.45) 0 46px, transparent 47px),
+    radial-gradient(circle at 30% 76%, rgba(125, 211, 252, 0.35) 0 40px, transparent 41px),
+    radial-gradient(circle at 82% 80%, rgba(96, 165, 250, 0.32) 0 52px, transparent 53px);
+  animation: sparkleFloat 14s linear infinite;
+}
+
+@keyframes sparklePulse {
+  0%,
+  100% {
+    filter: brightness(1);
+    opacity: 1;
+  }
+
+  50% {
+    filter: brightness(1.08);
+    opacity: 0.92;
+  }
+}
+
+@keyframes sparkleFloat {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Remove per-page solid gradient wrappers so global theme remains visible. */
+[class*="bg-gradient-to-br"][class*="from-sky-50"][class*="via-blue-50"][class*="to-indigo-100"] {
+  background: transparent !important;
+}
+
+/* Several pages share this full-viewport wrapper; force transparency consistently. */
+div.flex.min-h-screen.items-center.justify-center {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Match Google Forms-like banners above and below each form card. */
+main.mx-auto.w-full.max-w-3xl.rounded-2xl {
+  position: relative;
+  overflow: visible;
+  --cisco-banner-height: clamp(84px, 13vw, 118px);
+  margin-top: calc(var(--cisco-banner-height) + 1rem);
+}
+
+main.mx-auto.w-full.max-w-3xl.rounded-2xl::before,
+main.mx-auto.w-full.max-w-3xl.rounded-2xl::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: var(--cisco-banner-height);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border-radius: 0.55rem;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+  pointer-events: none;
+}
+
+main.mx-auto.w-full.max-w-3xl.rounded-2xl::before {
+  top: calc(-1 * (var(--cisco-banner-height) + 0.55rem));
+  background-image: url("/cisco_header.png");
+}
+
+main.mx-auto.w-full.max-w-3xl.rounded-2xl::after {
+  display: none;
+}
