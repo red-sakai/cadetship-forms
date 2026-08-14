@@ -8,58 +8,43 @@ import { createSupabasePublicClient } from "@/lib/supabase";
 const COOKIE_PREFIX = "registration_";
 
 type TechnologyRole =
-  | "Enterprise Networking Lead"
-  | "Enterprise Networking Co-Lead"
-  | "CyberOps Lead"
-  | "CyberOps Co-Lead"
-  | "DevNet Lead"
-  | "DevNet Co-Lead";
+  | "Enterprise Networking Apprentice"
+  | "CyberOps Apprentice"
+  | "DevNet Apprentice";
 
 const TECHNOLOGY_ROLES: readonly TechnologyRole[] = [
-  "Enterprise Networking Lead",
-  "Enterprise Networking Co-Lead",
-  "CyberOps Lead",
-  "CyberOps Co-Lead",
-  "DevNet Lead",
-  "DevNet Co-Lead",
+  "Enterprise Networking Apprentice",
+  "CyberOps Apprentice",
+  "DevNet Apprentice",
 ];
 
 const ROLE_DESCRIPTIONS: Record<TechnologyRole, string> = {
-  "Enterprise Networking Lead":
-    "Mentors members through a curriculum aligned with the Cisco Certified Network Associate (CCNA), covering network fundamentals, design, configuration, security, and troubleshooting. Organizes hands-on laboratories and oversees projects that develop practical skills in managing reliable enterprise networks.",
-  "Enterprise Networking Co-Lead":
-    "Supports the Enterprise Networking Lead in mentoring members through a CCNA-aligned curriculum covering network fundamentals, design, configuration, security, and troubleshooting. Assists in organizing hands-on laboratories, coordinating networking activities, and guiding projects that build practical skills in designing, managing, and troubleshooting reliable enterprise networks.",
-  "CyberOps Lead":
-    "Mentors members through a curriculum aligned with Cisco CCNA Cybersecurity, covering threat monitoring, host and network analysis, vulnerability assessment, and incident response. Organizes security laboratories, CTF training, and projects that strengthen the team's defensive cybersecurity skills.",
-  "CyberOps Co-Lead":
-    "Supports the CyberOps Lead in mentoring members through a curriculum aligned with Cisco CCNA Cybersecurity, covering threat monitoring, host and network analysis, vulnerability assessment, and incident response. Assists in organizing security laboratories, CTF training, and hands-on projects that strengthen members' practical skills in defensive cybersecurity and security operations.",
-  "DevNet Lead":
-    "Mentors members through a curriculum aligned with Cisco CCNA Automation, formerly known as DevNet Associate, covering programming, APIs, application development, and infrastructure automation. Oversees DevNet projects and develops tools that support networking, cybersecurity, and other organizational initiatives.",
-  "DevNet Co-Lead":
-    "Supports the DevNet Lead in mentoring members through a curriculum aligned with Cisco CCNA Automation, formerly known as DevNet Associate, covering programming, APIs, application development, and infrastructure automation. Assists in overseeing DevNet projects and developing automation tools that support networking, cybersecurity, and other organizational initiatives.",
+  "Enterprise Networking Apprentice":
+    "Learns network fundamentals, design, configuration, security, and troubleshooting through a curriculum aligned with the Cisco Certified Network Associate (CCNA), hands-on laboratories, and projects that develop practical skills in managing reliable enterprise networks.",
+  "CyberOps Apprentice":
+    "Learns threat monitoring, host and network analysis, vulnerability assessment, and incident response through a curriculum aligned with Cisco CCNA Cybersecurity, security laboratories, CTF training, and projects that build practical defensive cybersecurity skills.",
+  "DevNet Apprentice":
+    "Learns programming, APIs, application development, and infrastructure automation through a curriculum aligned with Cisco CCNA Automation, formerly known as DevNet Associate, and hands-on projects that build automation tools supporting networking, cybersecurity, and other organizational initiatives.",
 };
 
 const TRACK_BY_ROLE: Record<TechnologyRole, string> = {
-  "Enterprise Networking Lead": "Enterprise Networking",
-  "Enterprise Networking Co-Lead": "Enterprise Networking",
-  "CyberOps Lead": "CyberOps",
-  "CyberOps Co-Lead": "CyberOps",
-  "DevNet Lead": "DevNet",
-  "DevNet Co-Lead": "DevNet",
+  "Enterprise Networking Apprentice": "Enterprise Networking",
+  "CyberOps Apprentice": "CyberOps",
+  "DevNet Apprentice": "DevNet",
 };
 
 const QUESTIONS_BY_TRACK: Record<string, readonly string[]> = {
   "Enterprise Networking": [
-    "What experience do you have with networking concepts (e.g., OSI/TCP-IP, configuration, or troubleshooting), and how would you help members learn them?",
-    "How would you design a hands-on laboratory or activity that helps members understand how a real enterprise network works?",
+    "What experience do you have with networking concepts (e.g., OSI/TCP-IP, configuration, or troubleshooting), and what do you hope to learn as an Enterprise Networking apprentice?",
+    "What kind of hands-on laboratory or project would you want to work on to understand how a real enterprise network works?",
   ],
   CyberOps: [
-    "What experience do you have with cybersecurity (e.g., CTFs, threat monitoring, or security tools), and how would you guide members in learning them?",
-    "How would you prepare the team for a security challenge or incident-response exercise?",
+    "What experience do you have with cybersecurity (e.g., CTFs, threat monitoring, or security tools), and what do you hope to learn as a CyberOps apprentice?",
+    "What kind of security challenge or incident-response exercise would you want the team to run, and what would you want to gain from it?",
   ],
   DevNet: [
-    "What experience do you have with programming, APIs, or automation, and how would you help members build those skills?",
-    "What kind of automation tool or project would you want the team to build, and how would you guide it?",
+    "What experience do you have with programming, APIs, or automation, and what do you hope to learn as a DevNet apprentice?",
+    "What kind of automation tool or project would you want to learn to build, and what skills would you want to gain from it?",
   ],
 };
 
@@ -102,7 +87,6 @@ export default function TechnologyDepartmentPage() {
     const firstName = getRegistrationCookieValue("firstName");
     const lastName = getRegistrationCookieValue("lastName");
     const email = getRegistrationCookieValue("email");
-    const fullName = `${firstName} ${lastName}`.trim();
 
     if (!firstName || !lastName || !email) {
       setSubmitError("Missing personal information. Please complete the Personal Information page first.");
@@ -115,39 +99,21 @@ export default function TechnologyDepartmentPage() {
     }
 
     const formData = new FormData(event.currentTarget);
-    const questions = QUESTIONS_BY_TRACK[track];
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.from("registration_technology_lead_colead").insert({
+    const { error } = await supabase.from("registration_technology_apprentice").insert({
       first_name: firstName,
       last_name: lastName,
       email,
-      technology_department: track,
-      applying_as: selectedRole.endsWith("Co-Lead") ? "colead" : "lead",
-      expectation_answer: String(formData.get("technologyQuestion1") ?? ""),
-      certifications_answer: String(formData.get("technologyQuestion2") ?? ""),
-      extra_answers: { questions },
+      track,
+      question_1: String(formData.get("technologyQuestion1") ?? ""),
+      question_2: String(formData.get("technologyQuestion2") ?? ""),
     });
 
     if (error) {
       setIsSubmitting(false);
       setSubmitError(error.message);
-      return;
-    }
-
-    const { error: interviewError } = await supabase.from("to_be_interviewed").insert({
-      name: fullName,
-      email,
-      department: "Technology",
-      team: track,
-      role: selectedRole.endsWith("Co-Lead") ? "Co-Lead" : "Lead",
-      status: "pending",
-    });
-
-    if (interviewError) {
-      setIsSubmitting(false);
-      setSubmitError(interviewError.message);
       return;
     }
 
@@ -168,7 +134,7 @@ export default function TechnologyDepartmentPage() {
         </p>
 
         <p className="mt-4 text-sm leading-6 text-slate-700">
-          For detailed information on each department role, you can refer to{" "}
+          For detailed information on each apprenticeship track, you can refer to{" "}
           <a
             className="font-medium text-sky-700 underline"
             href="https://docs.google.com/document/d/1dU6wpyFiGRfjeYCiymvxjvigK2m3VN2BdRBaZOwL8ww/edit?tab=t.0#heading=h.vixkji6185jn"
@@ -182,7 +148,7 @@ export default function TechnologyDepartmentPage() {
         <form className="mt-6 space-y-4 text-sm" onSubmit={handleSubmit}>
           <fieldset className="space-y-3 rounded-xl border border-sky-200 bg-sky-50/70 p-4 sm:col-span-2">
             <legend className="px-2 text-sm font-semibold">
-              What position would you like to apply for? <span className="text-red-600">*</span>
+              What apprenticeship track would you like to apply for? <span className="text-red-600">*</span>
             </legend>
 
             {TECHNOLOGY_ROLES.map((role) => (
