@@ -8,42 +8,42 @@ import { createSupabasePublicClient } from "@/lib/supabase";
 const COOKIE_PREFIX = "registration_";
 
 type TechnologyRole =
-  | "Enterprise Networking Apprentice"
-  | "CyberOps Apprentice"
-  | "DevNet Apprentice";
+  | "Enterprise Networking Cadet"
+  | "CyberOps Cadet"
+  | "DevNet Cadet";
 
 const TECHNOLOGY_ROLES: readonly TechnologyRole[] = [
-  "Enterprise Networking Apprentice",
-  "CyberOps Apprentice",
-  "DevNet Apprentice",
+  "Enterprise Networking Cadet",
+  "CyberOps Cadet",
+  "DevNet Cadet",
 ];
 
 const ROLE_DESCRIPTIONS: Record<TechnologyRole, string> = {
-  "Enterprise Networking Apprentice":
+  "Enterprise Networking Cadet":
     "Learns network fundamentals, design, configuration, security, and troubleshooting through a curriculum aligned with the Cisco Certified Network Associate (CCNA), hands-on laboratories, and projects that develop practical skills in managing reliable enterprise networks.",
-  "CyberOps Apprentice":
+  "CyberOps Cadet":
     "Learns threat monitoring, host and network analysis, vulnerability assessment, and incident response through a curriculum aligned with Cisco CCNA Cybersecurity, security laboratories, CTF training, and projects that build practical defensive cybersecurity skills.",
-  "DevNet Apprentice":
+  "DevNet Cadet":
     "Learns programming, APIs, application development, and infrastructure automation through a curriculum aligned with Cisco CCNA Automation, formerly known as DevNet Associate, and hands-on projects that build automation tools supporting networking, cybersecurity, and other organizational initiatives.",
 };
 
 const TRACK_BY_ROLE: Record<TechnologyRole, string> = {
-  "Enterprise Networking Apprentice": "Enterprise Networking",
-  "CyberOps Apprentice": "CyberOps",
-  "DevNet Apprentice": "DevNet",
+  "Enterprise Networking Cadet": "Enterprise Networking",
+  "CyberOps Cadet": "CyberOps",
+  "DevNet Cadet": "DevNet",
 };
 
 const QUESTIONS_BY_TRACK: Record<string, readonly string[]> = {
   "Enterprise Networking": [
-    "What experience do you have with networking concepts (e.g., OSI/TCP-IP, configuration, or troubleshooting), and what do you hope to learn as an Enterprise Networking apprentice?",
+    "What experience do you have with networking concepts (e.g., OSI/TCP-IP, configuration, or troubleshooting), and what do you hope to learn as an Enterprise Networking cadet?",
     "What kind of hands-on laboratory or project would you want to work on to understand how a real enterprise network works?",
   ],
   CyberOps: [
-    "What experience do you have with cybersecurity (e.g., CTFs, threat monitoring, or security tools), and what do you hope to learn as a CyberOps apprentice?",
+    "What experience do you have with cybersecurity (e.g., CTFs, threat monitoring, or security tools), and what do you hope to learn as a CyberOps cadet?",
     "What kind of security challenge or incident-response exercise would you want the team to run, and what would you want to gain from it?",
   ],
   DevNet: [
-    "What experience do you have with programming, APIs, or automation, and what do you hope to learn as a DevNet apprentice?",
+    "What experience do you have with programming, APIs, or automation, and what do you hope to learn as a DevNet cadet?",
     "What kind of automation tool or project would you want to learn to build, and what skills would you want to gain from it?",
   ],
 };
@@ -102,7 +102,7 @@ export default function TechnologyDepartmentPage() {
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.from("registration_technology_apprentice").insert({
+    const { error } = await supabase.from("registration_technology_cadet").insert({
       first_name: firstName,
       last_name: lastName,
       email,
@@ -134,7 +134,7 @@ export default function TechnologyDepartmentPage() {
         </p>
 
         <p className="mt-4 text-sm leading-6 text-slate-700">
-          For detailed information on each apprenticeship track, you can refer to{" "}
+          For detailed information on each cadetship track, you can refer to{" "}
           <a
             className="font-medium text-sky-700 underline"
             href="https://docs.google.com/document/d/1dU6wpyFiGRfjeYCiymvxjvigK2m3VN2BdRBaZOwL8ww/edit?tab=t.0#heading=h.vixkji6185jn"
@@ -148,7 +148,7 @@ export default function TechnologyDepartmentPage() {
         <form className="mt-6 space-y-4 text-sm" onSubmit={handleSubmit}>
           <fieldset className="space-y-3 rounded-xl border border-sky-200 bg-sky-50/70 p-4 sm:col-span-2">
             <legend className="px-2 text-sm font-semibold">
-              What apprenticeship track would you like to apply for? <span className="text-red-600">*</span>
+              What cadetship track would you like to apply for? <span className="text-red-600">*</span>
             </legend>
 
             {TECHNOLOGY_ROLES.map((role) => (
