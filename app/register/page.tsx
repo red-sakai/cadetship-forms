@@ -494,7 +494,7 @@ function RegisterFormPage() {
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium text-slate-200">Which department would you like to apply to as a executive/lead? <span className="text-rose-400">*</span></span>
+              <span className="font-medium text-slate-200">Which department would you like to apply to? <span className="text-rose-400">*</span></span>
               <select
                 name="membershipType"
                 className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
