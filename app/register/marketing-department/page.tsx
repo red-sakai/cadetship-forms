@@ -92,8 +92,8 @@ export default function MarketingDepartmentPage() {
 
     const formData = new FormData(event.currentTarget);
     const questionAnswers = {
-      leadershipQuestion_1: String(formData.get("marketingQuestion1") ?? ""),
-      leadershipQuestion_2: String(formData.get("marketingQuestion2") ?? ""),
+      question_1: String(formData.get("marketingQuestion1") ?? ""),
+      question_2: String(formData.get("marketingQuestion2") ?? ""),
     };
 
     // Save personal info from cookies (only saves when department form is submitted)

@@ -106,8 +106,8 @@ export default function AdministrativeDepartmentPage() {
 
     const formData = new FormData(event.currentTarget);
     const questionAnswers = {
-      leadershipQuestion_1: String(formData.get("administrativeQuestion1") ?? ""),
-      leadershipQuestion_2: String(formData.get("administrativeQuestion2") ?? ""),
+      question_1: String(formData.get("administrativeQuestion1") ?? ""),
+      question_2: String(formData.get("administrativeQuestion2") ?? ""),
     };
 
     // Save personal info from cookies (only saves when department form is submitted)

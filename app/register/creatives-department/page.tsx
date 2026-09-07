@@ -99,8 +99,8 @@ export default function CreativesDepartmentPage() {
 
     const formData = new FormData(event.currentTarget);
     const questionAnswers = {
-      leadershipQuestion_1: String(formData.get("creativesQuestion1") ?? ""),
-      leadershipQuestion_2: String(formData.get("creativesQuestion2") ?? ""),
+      question_1: String(formData.get("creativesQuestion1") ?? ""),
+      question_2: String(formData.get("creativesQuestion2") ?? ""),
     };
 
     // Save personal info from cookies (only saves when department form is submitted)
