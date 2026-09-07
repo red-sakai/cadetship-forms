@@ -5,8 +5,6 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 
-import { createSupabasePublicClient } from "@/lib/supabase";
-
 const registerSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required"),
   lastName: z.string().trim().min(1, "Last name is required"),
@@ -86,56 +84,6 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const COOKIE_PREFIX = "registration_";
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
-const PERSONAL_INFO_RATE_LIMIT_WINDOW_MS = 15 * 1000;
-const PERSONAL_INFO_RATE_LIMIT_STORAGE_KEY = "registration_personal_info_last_submit_at";
-
-type PersonalInfoRecord = {
-  id?: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  facebook_link: string;
-  facebook_shared_post: string;
-  discord_username: string;
-  linkedin_link: string | null;
-  pup_webmail: string;
-  phone: string;
-  course_year_section: string;
-  certificate_link: string;
-  college_campus: string;
-  membership_type: string;
-};
-
-const toPersonalInfoRecord = (values: RegisterFormValues): PersonalInfoRecord => ({
-  first_name: values.firstName,
-  last_name: values.lastName,
-  email: values.email,
-  facebook_link: values.facebookLink,
-  facebook_shared_post: values.facebookSharedPost,
-  discord_username: values.discordUsername,
-  linkedin_link: values.linkedinLink === "" ? null : values.linkedinLink,
-  pup_webmail: values.pupWebmail,
-  phone: values.phone,
-  course_year_section: values.courseYearSection,
-  certificate_link: values.certificateLink,
-  college_campus: values.collegeCampus,
-  membership_type: values.membershipType,
-});
-
-const isSamePersonalInfo = (existing: PersonalInfoRecord, next: PersonalInfoRecord) =>
-  existing.first_name === next.first_name &&
-  existing.last_name === next.last_name &&
-  existing.email === next.email &&
-  existing.facebook_link === next.facebook_link &&
-  existing.facebook_shared_post === next.facebook_shared_post &&
-  existing.discord_username === next.discord_username &&
-  (existing.linkedin_link ?? null) === (next.linkedin_link ?? null) &&
-  existing.pup_webmail === next.pup_webmail &&
-  existing.phone === next.phone &&
-  existing.course_year_section === next.course_year_section &&
-  existing.certificate_link === next.certificate_link &&
-  existing.college_campus === next.college_campus &&
-  existing.membership_type === next.membership_type;
 
 const registerFieldNames: Array<keyof RegisterFormValues> = [
   "firstName",
@@ -180,7 +128,6 @@ const getSavedValuesFromCookies = (): Partial<Record<keyof RegisterFormValues, s
 function RegisterFormPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createSupabasePublicClient();
   const [errors, setErrors] = useState<Partial<Record<keyof RegisterFormValues, string>>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -256,61 +203,10 @@ function RegisterFormPage() {
       saveFieldToCookie(field, result.data[field]);
     });
 
-    const now = Date.now();
-    const lastSubmittedAt = Number(window.localStorage.getItem(PERSONAL_INFO_RATE_LIMIT_STORAGE_KEY) ?? "0");
-    const msSinceLastSubmit = now - lastSubmittedAt;
-
-    if (Number.isFinite(lastSubmittedAt) && msSinceLastSubmit < PERSONAL_INFO_RATE_LIMIT_WINDOW_MS) {
-      const secondsRemaining = Math.ceil((PERSONAL_INFO_RATE_LIMIT_WINDOW_MS - msSinceLastSubmit) / 1000);
-      setSubmitError(`Please wait ${secondsRemaining} second${secondsRemaining === 1 ? "" : "s"} before submitting again.`);
-      return;
-    }
-
     setIsSubmitting(true);
 
-    const personalInfoPayload = toPersonalInfoRecord(result.data);
-
-    const { data: previousRecord, error: previousRecordError } = await supabase
-      .from("registration_personal_info")
-      .select(
-        "id,first_name,last_name,email,facebook_link,facebook_shared_post,discord_username,linkedin_link,pup_webmail,phone,course_year_section,certificate_link,college_campus,membership_type",
-      )
-      .eq("first_name", personalInfoPayload.first_name)
-      .eq("last_name", personalInfoPayload.last_name)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle<PersonalInfoRecord>();
-
-    if (previousRecordError) {
-      setIsSubmitting(false);
-      setSubmitError(previousRecordError.message);
-      return;
-    }
-
-    if (previousRecord && isSamePersonalInfo(previousRecord, personalInfoPayload)) {
-      // ponytail: name match with identical info — skip, resubmitting same form is not a duplicate row
-    } else if (previousRecord) {
-      const { error: updateError } = await supabase
-        .from("registration_personal_info")
-        .update(personalInfoPayload)
-        .eq("id", previousRecord.id);
-
-      if (updateError) {
-        setIsSubmitting(false);
-        setSubmitError(updateError.message);
-        return;
-      }
-    } else {
-      const { error: insertError } = await supabase.from("registration_personal_info").insert(personalInfoPayload);
-
-      if (insertError) {
-        setIsSubmitting(false);
-        setSubmitError(insertError.message);
-        return;
-      }
-    }
-
-    window.localStorage.setItem(PERSONAL_INFO_RATE_LIMIT_STORAGE_KEY, String(Date.now()));
+    // Small delay to show saving state, then navigate to department page
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     setIsSubmitting(false);
 
@@ -349,16 +245,21 @@ function RegisterFormPage() {
       return;
     }
 
+    if (result.data.membershipType === "Finance Department") {
+      router.push("/register/finance-department");
+      return;
+    }
+
     setErrors({
-      membershipType: "This department page is not available yet. Please select Technology, Operations, Creatives, Marketing, Relations, Administrative, or Executive Department for now.",
+      membershipType: "This department page is not available yet. Please select Technology, Operations, Creatives, Marketing, Relations, Administrative, Executive, or Finance Department for now.",
     });
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 px-4 py-6 font-sans text-zinc-900">
-      <main className="mx-auto w-full max-w-3xl rounded-2xl border border-sky-100 bg-white/95 p-6 shadow-lg shadow-blue-100 sm:p-8">
-        <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Registration - Personal Information</h1>
-        <p className="mt-2 text-sm text-slate-600">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0c0a1a] via-[#12102a] to-[#0f0d22] px-4 py-6 font-sans text-zinc-100">
+      <main className="mx-auto w-full max-w-3xl rounded-2xl border border-indigo-500/20 bg-[#161335]/90 p-6 shadow-lg shadow-indigo-900/40 sm:p-8">
+        <h1 className="text-2xl font-semibold text-indigo-100 sm:text-3xl">Registration - Personal Information</h1>
+        <p className="mt-2 text-sm text-slate-300">
           Please complete this personal information section of the registration.
         </p>
 
@@ -371,68 +272,68 @@ function RegisterFormPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="space-y-2 text-sm">
-              <span className="font-medium">First Name <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">First Name <span className="text-rose-400">*</span></span>
               <input
                 type="text"
                 name="firstName"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 defaultValue={getDefaultValue("firstName")}
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.firstName && <p className="text-xs text-red-600">{errors.firstName}</p>}
+              {errors.firstName && <p className="text-xs text-rose-400">{errors.firstName}</p>}
             </label>
 
             <label className="space-y-2 text-sm">
-              <span className="font-medium">Last Name <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">Last Name <span className="text-rose-400">*</span></span>
               <input
                 type="text"
                 name="lastName"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 defaultValue={getDefaultValue("lastName")}
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.lastName && <p className="text-xs text-red-600">{errors.lastName}</p>}
+              {errors.lastName && <p className="text-xs text-rose-400">{errors.lastName}</p>}
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">Email Address <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">Email Address <span className="text-rose-400">*</span></span>
               <input
                 type="email"
                 name="email"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 defaultValue={getDefaultValue("email")}
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
+              {errors.email && <p className="text-xs text-rose-400">{errors.email}</p>}
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">Facebook Link <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">Facebook Link <span className="text-rose-400">*</span></span>
               <input
                 type="url"
                 name="facebookLink"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 placeholder="https://www.facebook.com/..."
                 defaultValue={getDefaultValue("facebookLink")}
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.facebookLink && <p className="text-xs text-red-600">{errors.facebookLink}</p>}
+              {errors.facebookLink && <p className="text-xs text-rose-400">{errors.facebookLink}</p>}
             </label>
 
             <div className="space-y-2 text-sm sm:col-span-2">
               <div className="flex items-center gap-1.5 font-medium">
                 <span>
-                  Facebook Shared Post <span className="text-red-600">*</span>
+                  Facebook Shared Post <span className="text-rose-400">*</span>
                 </span>
                 <details className="relative inline">
-                  <summary className="inline-flex h-4 w-4 cursor-pointer list-none items-center justify-center rounded-full bg-slate-200 text-xs text-slate-600 hover:bg-slate-300 [&::-webkit-details-marker]:hidden">
+                  <summary className="inline-flex h-4 w-4 cursor-pointer list-none items-center justify-center rounded-full bg-slate-700 text-xs text-slate-200 hover:bg-slate-600 [&::-webkit-details-marker]:hidden">
                     ?
                   </summary>
-                  <span className="absolute left-0 top-5 z-10 w-64 rounded-md border border-slate-200 bg-white p-2 text-xs font-normal text-slate-600 shadow-lg">
+                  <span className="absolute left-0 top-5 z-10 w-64 rounded-md border border-slate-600 bg-slate-800 p-2 text-xs font-normal text-slate-200 shadow-lg">
                     The link to your shared post of CNCP&apos;s Recruitment
                   </span>
                 </details>
@@ -440,60 +341,60 @@ function RegisterFormPage() {
               <input
                 type="url"
                 name="facebookSharedPost"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 placeholder="https://www.facebook.com/..."
                 defaultValue={getDefaultValue("facebookSharedPost")}
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.facebookSharedPost && <p className="text-xs text-red-600">{errors.facebookSharedPost}</p>}
+              {errors.facebookSharedPost && <p className="text-xs text-rose-400">{errors.facebookSharedPost}</p>}
             </div>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">Discord Username <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">Discord Username <span className="text-rose-400">*</span></span>
               <input
                 type="text"
                 name="discordUsername"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 defaultValue={getDefaultValue("discordUsername")}
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.discordUsername && <p className="text-xs text-red-600">{errors.discordUsername}</p>}
+              {errors.discordUsername && <p className="text-xs text-rose-400">{errors.discordUsername}</p>}
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">LinkedIn Link</span>
+              <span className="font-medium text-slate-200">LinkedIn Link</span>
               <input
                 type="url"
                 name="linkedinLink"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 placeholder="https://www.linkedin.com/in/..."
                 defaultValue={getDefaultValue("linkedinLink")}
                 onBlur={handleFieldBlur}
               />
-              {errors.linkedinLink && <p className="text-xs text-red-600">{errors.linkedinLink}</p>}
+              {errors.linkedinLink && <p className="text-xs text-rose-400">{errors.linkedinLink}</p>}
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">PUP Webmail <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">PUP Webmail <span className="text-rose-400">*</span></span>
               <input
                 type="email"
                 name="pupWebmail"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 defaultValue={getDefaultValue("pupWebmail")}
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.pupWebmail && <p className="text-xs text-red-600">{errors.pupWebmail}</p>}
+              {errors.pupWebmail && <p className="text-xs text-rose-400">{errors.pupWebmail}</p>}
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">Phone Number <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">Phone Number <span className="text-rose-400">*</span></span>
               <input
                 type="tel"
                 name="phone"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 inputMode="numeric"
                 pattern="09[0-9]{9}"
                 minLength={11}
@@ -504,42 +405,42 @@ function RegisterFormPage() {
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.phone && <p className="text-xs text-red-600">{errors.phone}</p>}
+              {errors.phone && <p className="text-xs text-rose-400">{errors.phone}</p>}
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">Course, Year, and Section <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">Course, Year, and Section <span className="text-rose-400">*</span></span>
               <input
                 type="text"
                 name="courseYearSection"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 placeholder="e.g. BSCpE 2-5"
                 defaultValue={getDefaultValue("courseYearSection")}
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.courseYearSection && <p className="text-xs text-red-600">{errors.courseYearSection}</p>}
+              {errors.courseYearSection && <p className="text-xs text-rose-400">{errors.courseYearSection}</p>}
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">Certificate of Registration/Enrollment <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">Certificate of Registration/Enrollment <span className="text-rose-400">*</span></span>
               <input
                 type="url"
                 name="certificateLink"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 placeholder="https://drive.google.com/..."
                 defaultValue={getDefaultValue("certificateLink")}
                 onBlur={handleFieldBlur}
                 required
               />
-              {errors.certificateLink && <p className="text-xs text-red-600">{errors.certificateLink}</p>}
+              {errors.certificateLink && <p className="text-xs text-rose-400">{errors.certificateLink}</p>}
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">Which PUP college/campus do you belong to? <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">Which PUP college/campus do you belong to? <span className="text-rose-400">*</span></span>
               <select
                 name="collegeCampus"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 required
                 defaultValue={getDefaultValue("collegeCampus")}
                 onBlur={handleFieldBlur}
@@ -589,14 +490,14 @@ function RegisterFormPage() {
                 <option value="Taguig City">Taguig City</option>
                 <option value="Unisan, Quezon">Unisan, Quezon</option>
               </select>
-              {errors.collegeCampus && <p className="text-xs text-red-600">{errors.collegeCampus}</p>}
+              {errors.collegeCampus && <p className="text-xs text-rose-400">{errors.collegeCampus}</p>}
             </label>
 
             <label className="space-y-2 text-sm sm:col-span-2">
-              <span className="font-medium">Which department would you like to apply to as a executive/lead? <span className="text-red-600">*</span></span>
+              <span className="font-medium text-slate-200">Which department would you like to apply to as a executive/lead? <span className="text-rose-400">*</span></span>
               <select
                 name="membershipType"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 outline-none focus:border-sky-500"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-800/80 px-3 py-2 outline-none focus:border-indigo-400"
                 required
                 defaultValue={getDefaultValue("membershipType")}
                 onBlur={handleFieldBlur}
@@ -611,13 +512,14 @@ function RegisterFormPage() {
                 <option value="Relations Department">Relations Department</option>
                 <option value="Administrative Department">Administrative Department</option>
                 <option value="Executive Department">Executive Department</option>
+                <option value="Finance Department">Finance Department</option>
               </select>
-              {errors.membershipType && <p className="text-xs text-red-600">{errors.membershipType}</p>}
+              {errors.membershipType && <p className="text-xs text-rose-400">{errors.membershipType}</p>}
             </label>
           </div>
 
           {submitError && (
-            <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <p className="rounded-md border border-red-500/30 bg-red-950/40 px-3 py-2 text-sm text-red-300">
               {submitError}
             </p>
           )}
@@ -625,7 +527,7 @@ function RegisterFormPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="inline-flex h-11 items-center justify-center rounded-md bg-sky-600 px-5 text-sm font-medium text-white transition hover:bg-sky-700"
+            className="inline-flex h-11 items-center justify-center rounded-md bg-indigo-600 px-5 text-sm font-medium text-white transition hover:bg-indigo-500"
           >
             {isSubmitting ? "Saving..." : "Continue"}
           </button>
@@ -637,7 +539,7 @@ function RegisterFormPage() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100" />}>
+    <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-[#0c0a1a] via-[#12102a] to-[#0f0d22]" />}>
       <RegisterFormPage />
     </Suspense>
   );

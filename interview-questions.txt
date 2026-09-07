@@ -1,0 +1,187 @@
+CISCO NETCONNECT PUP - MANILA
+INTERVIEW QUESTIONS BY DEPARTMENT AND ROLE
+==========================================
+
+--------------------------------------------
+TECHNOLOGY DEPARTMENT
+--------------------------------------------
+
+Enterprise Networking Cadet
+1. What interests you about learning how computer networks work, and what do you hope to gain from the Enterprise Networking track?
+2. If you could set up or troubleshoot a network for a school or small office, what would you want to learn first?
+
+Cybersecurity Operations Cadet
+1. What interests you about cybersecurity and protecting computer systems, and what do you hope to gain from the Cybersecurity Operations track?
+2. If you could learn one skill to keep networks safe from threats, what would it be and why?
+
+Developer Network Cadet
+1. What interests you about programming and automation, and what do you hope to gain from the Developer Network track?
+2. If you could build a tool that automates a repetitive task, what kind of tool would you want to create?
+
+--------------------------------------------
+RELATIONS DEPARTMENT - External
+--------------------------------------------
+
+Community Partnership Lead
+1. How would you identify and establish partnerships with other student organizations and academic communities to strengthen CNCP's presence?
+2. Describe a time you built or maintained a professional relationship with an external group. How did you approach it and what was the outcome?
+
+Community Partnership Co-Lead
+1. How would you support the Community Partnership Lead in managing external relationships and coordinating partnership activities?
+2. How would you handle a situation where a potential partner organization is unresponsive to outreach?
+
+Sponsors Lead
+1. How would you approach potential sponsors to secure support for CNCP's activities and initiatives?
+2. Describe a time you persuaded someone to support a cause or project. What strategies did you use and how did it go?
+
+Sponsors Co-Lead
+1. How would you assist the Sponsors Lead in preparing sponsorship proposals and managing follow-ups?
+2. How would you organize and maintain sponsor information to ensure effective communication?
+
+--------------------------------------------
+RELATIONS DEPARTMENT - Community
+--------------------------------------------
+
+Engagement Lead
+1. How would you design and implement an engagement strategy that keeps members active and connected within the community?
+2. How would you evaluate the effectiveness of engagement initiatives and adjust strategies based on feedback?
+
+Engagement Co-Lead
+1. How would you plan and facilitate an engaging community activity or event for CNCP members?
+2. How would you handle low participation in an engagement initiative you're leading?
+
+Membership Lead
+1. How would you develop and execute a recruitment strategy to grow CNCP's membership base?
+2. How would you organize the onboarding process to ensure new members feel welcomed and integrated?
+
+Membership Co-Lead
+1. How would you assist the Membership Lead in coordinating recruitment campaigns and onboarding activities?
+2. How would you follow up with potential applicants who have shown interest but haven't completed their application?
+
+Community Member
+1. How would you contribute to community initiatives and help strengthen participation within CNCP?
+2. What ideas do you have for activities or events that could improve member engagement in the organization?
+
+--------------------------------------------
+MARKETING DEPARTMENT
+--------------------------------------------
+
+Chief Marketing Officer
+1. What does leading a marketing team look like to you, and how would you set the direction for CNCP's brand?
+2. Tell us about a time you led or took charge of a project or activity from start to finish.
+
+Vice Chief Marketing Officer
+1. How would you help the Chief Marketing Officer plan and pace the team's content and campaigns?
+2. If two team members had different ideas for a campaign, how would you help them move forward?
+
+Caption Writer and Engagement Analyst
+1. How would you approach creating captions that reflect CNCP's brand voice while encouraging engagement from followers?
+2. What strategies would you use to analyze engagement metrics and use them to improve future content?
+
+Content Strategist and Video Director
+1. How would you approach brainstorming and developing ideas for a new CNCP campaign or post?
+2. How would you ensure that messaging such as titles, taglines, and key concepts are attention-grabbing and on-brand?
+
+--------------------------------------------
+OPERATIONS DEPARTMENT
+--------------------------------------------
+
+Program Managers
+1. How would you approach planning and coordinating a CNCP event from start to finish?
+2. Describe a time you managed timelines or coordinated multiple tasks for a project. How did you ensure everything stayed on track?
+
+Hosts
+1. How would you engage with attendees and manage the flow of an event you're hosting?
+2. Describe a time you presented or facilitated a discussion. How did you keep the audience engaged?
+
+Technical Coordinators
+1. How would you ensure that all technical systems (AV, streaming, etc.) are functioning correctly before and during an event?
+2. Describe a time you troubleshooted a technical issue during an event. How did you handle it?
+
+Logistics and Resource Coordinator
+1. How would you approach managing the setup and transportation of equipment for an event?
+2. How would you ensure that all necessary items are available and in place before an event starts?
+
+Registration and Access Coordinators
+1. How would you manage event registration processes and ensure proper access control?
+2. Describe a time you handled a registration issue or managed a guest list. How did you resolve any problems?
+
+Media Documentation Officers
+1. How would you approach capturing high-quality photos and visual documentation during an event?
+2. How would you ensure that event photos are properly archived and organized for future use?
+
+--------------------------------------------
+CREATIVES DEPARTMENT
+--------------------------------------------
+
+Video Editors
+1. How would you approach the post-production process to create engaging video content for CNCP?
+2. Describe a time you edited a video or worked with footage. What tools did you use and what did you learn from the experience?
+
+Animators
+1. How would you develop animated elements that complement video content or stand alone as engaging digital assets?
+2. Describe a time you created an animation or motion-based visual. What was your process and what did you learn?
+
+Photographer/Videographer
+1. How would you approach capturing high-quality images and videos during a CNCP event or campaign?
+2. Describe a time you took photos or shot video for a project. How did you ensure the visuals told an engaging story?
+
+Graphic Designers
+1. How would you create visually appealing layouts that combine typography, color, and design elements for CNCP materials?
+2. Describe a time you designed graphics or visual materials. How did you ensure brand consistency and visual impact?
+
+Illustrators
+1. How would you approach crafting custom visual elements such as mascots or unique illustrations for CNCP?
+2. Describe a time you created an illustration or custom visual element. What was your creative process and what did you learn?
+
+--------------------------------------------
+ADMINISTRATIVE DEPARTMENT
+--------------------------------------------
+
+Secretariat Officers
+1. How would you manage official documentation and ensure that organizational records are accurate and accessible?
+2. Describe a time you managed documents, schedules, or records. How did you stay organized and ensure nothing was missed?
+
+Membership Officers
+1. How would you manage membership records and ensure that member information is complete and up to date?
+2. Describe a time you handled member-related administration or processed applications. How did you ensure accuracy and efficiency?
+
+Institutional Affairs Officers
+1. How would you coordinate with the school regarding organizational requirements such as the GPOA?
+2. Describe a time you followed up on pending submissions or coordinated with institutional offices. How did you ensure timely completion?
+
+Internal Operations Officers
+1. How would you monitor administrative tasks and ensure that deadlines are met across departments?
+2. Describe a time you identified delayed or incomplete tasks and escalated them appropriately. How did you handle it?
+
+Administrative Systems Officers
+1. How would you manage the administrative use of CNCP's systems and ensure they support operational needs?
+2. Describe a time you identified gaps or inefficiencies in a system or workflow. How did you address them?
+
+Events & Records Officers
+1. How would you coordinate the administrative requirements for a CNCP event with the Operations Department?
+2. Describe a time you tracked event statistics or participation data. How did you ensure accuracy and completeness?
+
+--------------------------------------------
+EXECUTIVE DEPARTMENT
+--------------------------------------------
+
+Vice Chief Executive Officer
+1. What does being part of the organization's executive team mean to you, and how would you contribute as Vice Chief Executive Officer?
+2. Describe a time you supported or stepped in for a leader. What did you do, and what did you learn from it?
+
+--------------------------------------------
+FINANCE DEPARTMENT
+--------------------------------------------
+
+Chief Finance Officer
+1. How would you lead the Finance Department in managing CNCP's financial resources responsibly and transparently?
+2. Describe a time you managed a budget, allocated resources, or handled financial planning. What did you learn from the experience?
+
+Vice Chief Finance Officer
+1. How would you support the Chief Finance Officer in managing day-to-day financial operations and departmental coordination?
+2. How would you handle a situation where financial documentation needs to be completed under a tight deadline?
+
+Auditor
+1. How would you approach independently reviewing financial records to ensure accuracy and compliance with policies?
+2. Describe a time you identified an error or discrepancy in a process. How did you handle it and what was the outcome?

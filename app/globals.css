@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #dbeafe;
-  --foreground: #0f172a;
+  --background: #0c0a1a;
+  --foreground: #e2e8f0;
 }
 
 html {
@@ -31,65 +31,64 @@ body > * {
   z-index: 1;
 }
 
-body::before,
-body::after {
-  content: "";
+/* Galaxy background - fixed, fills viewport */
+.galaxy-bg {
   position: fixed;
   inset: 0;
+  z-index: -4;
+  background: url("/galaxy-background.png") center/cover no-repeat;
   pointer-events: none;
+}
+
+/* Pylon parallax layer - follows cursor */
+.pylon-parallax {
+  position: fixed;
+  inset: -30px;
+  z-index: -2;
+  background: url("/pylon.png") center/cover no-repeat;
+  pointer-events: none;
+  will-change: transform;
+  transition: transform 0.3s ease-out;
+}
+
+/* Dark overlay on top of everything */
+.dark-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(10, 8, 24, 0.45);
+}
+
+/* Center light beam - cone shape */
+.light-beam {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100vh;
   z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(120, 180, 255, 0.12) 0%,
+    rgba(120, 180, 255, 0.06) 30%,
+    rgba(120, 180, 255, 0.02) 60%,
+    transparent 100%
+  );
+  clip-path: polygon(35% 100%, 65% 100%, 55% 0%, 45% 0%);
+  animation: beamPulse 6s ease-in-out infinite alternate;
 }
 
-body::before {
-  background:
-    radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.55) 0 5px, transparent 6px),
-    radial-gradient(circle at 78% 15%, rgba(255, 255, 255, 0.5) 0 4px, transparent 5px),
-    radial-gradient(circle at 62% 40%, rgba(255, 255, 255, 0.48) 0 6px, transparent 7px),
-    radial-gradient(circle at 25% 58%, rgba(255, 255, 255, 0.42) 0 7px, transparent 8px),
-    radial-gradient(circle at 86% 68%, rgba(255, 255, 255, 0.5) 0 5px, transparent 6px),
-    radial-gradient(circle at 40% 82%, rgba(255, 255, 255, 0.44) 0 6px, transparent 7px),
-    linear-gradient(160deg, #c7e3ff 0%, #9bc8fb 44%, #7fb6f6 100%);
-  animation: sparklePulse 6s ease-in-out infinite;
-}
-
-body::after {
-  background:
-    radial-gradient(circle at 20% 32%, rgba(191, 219, 254, 0.5) 0 34px, transparent 35px),
-    radial-gradient(circle at 75% 28%, rgba(147, 197, 253, 0.45) 0 46px, transparent 47px),
-    radial-gradient(circle at 30% 76%, rgba(125, 211, 252, 0.35) 0 40px, transparent 41px),
-    radial-gradient(circle at 82% 80%, rgba(96, 165, 250, 0.32) 0 52px, transparent 53px);
-  animation: sparkleFloat 14s linear infinite;
-}
-
-@keyframes sparklePulse {
-  0%,
-  100% {
-    filter: brightness(1);
-    opacity: 1;
-  }
-
-  50% {
-    filter: brightness(1.08);
-    opacity: 0.92;
-  }
-}
-
-@keyframes sparkleFloat {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
+@keyframes beamPulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
 }
 
 /* Remove per-page solid gradient wrappers so global theme remains visible. */
-[class*="bg-gradient-to-br"][class*="from-sky-50"][class*="via-blue-50"][class*="to-indigo-100"] {
+[class*="bg-gradient-to-br"] {
   background: transparent !important;
 }
 
@@ -118,15 +117,58 @@ main.mx-auto.w-full.max-w-3xl.rounded-2xl::after {
   background-position: center;
   background-size: cover;
   border-radius: 0.55rem;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   pointer-events: none;
 }
 
 main.mx-auto.w-full.max-w-3xl.rounded-2xl::before {
   top: calc(-1 * (var(--cisco-banner-height) + 0.55rem));
-  background-image: url("/cisco_header.png");
+  background-image: url("/BANNER-Header.png");
 }
 
 main.mx-auto.w-full.max-w-3xl.rounded-2xl::after {
   display: none;
+}
+
+/* Shooting star */
+.shooting-star {
+  position: fixed;
+  width: 150px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(200, 220, 255, 1) 100%);
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: -3;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px rgba(180, 200, 255, 0.6));
+  animation: shootingStar linear forwards;
+}
+
+.shooting-star::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -1px;
+  width: 6px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 12px 4px rgba(200, 220, 255, 0.8);
+}
+
+@keyframes shootingStar {
+  0% {
+    opacity: 0;
+    transform: translateX(0) translateY(0) rotate(var(--angle));
+  }
+  5% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(var(--travel-x)) translateY(var(--travel-y)) rotate(var(--angle));
+  }
 }

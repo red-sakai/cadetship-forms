@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import LenisProvider from "./lenis-provider";
+import BackgroundEffects from "./background-effects";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <BackgroundEffects />
         <LenisProvider>{children}</LenisProvider>
       </body>
     </html>
