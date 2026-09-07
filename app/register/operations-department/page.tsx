@@ -106,8 +106,8 @@ export default function OperationsDepartmentPage() {
 
     const formData = new FormData(event.currentTarget);
     const questionAnswers = {
-      leadershipQuestion1: String(formData.get("operationsQuestion1") ?? ""),
-      leadershipQuestion2: String(formData.get("operationsQuestion2") ?? ""),
+      leadershipQuestion_1: String(formData.get("operationsQuestion1") ?? ""),
+      leadershipQuestion_2: String(formData.get("operationsQuestion2") ?? ""),
     };
 
     // Save personal info from cookies (only saves when department form is submitted)

@@ -60,8 +60,8 @@ export default function ExecutiveDepartmentPage() {
 
     const formData = new FormData(event.currentTarget);
     const questionAnswers = {
-      leadershipQuestion1: String(formData.get("executiveQuestion1") ?? ""),
-      leadershipQuestion2: String(formData.get("executiveQuestion2") ?? ""),
+      leadershipQuestion_1: String(formData.get("executiveQuestion1") ?? ""),
+      leadershipQuestion_2: String(formData.get("executiveQuestion2") ?? ""),
     };
 
     setIsSubmitting(true);
