@@ -32,6 +32,12 @@ const ROLE_DESCRIPTIONS: Record<OperationsRole, string> = {
     "Capture visual documentation of events, including photos of key moments, attendees, and activities. Ensure high-quality images are taken and appropriately archived for future use.",
 };
 
+const CLOSED_OPERATIONS_ROLES = new Set<string>([
+  "Registration and Access Coordinators",
+  "Technical Coordinators",
+  "Media Documentation Officers",
+]);
+
 const OPERATIONS_QUESTIONS_BY_ROLE: Record<OperationsRole, readonly string[]> = {
   "Program Managers": [
     "How would you approach planning and coordinating a CNCP event from start to finish?",
@@ -183,20 +189,24 @@ export default function OperationsDepartmentPage() {
               What position would you like to apply for? <span className="text-rose-400">*</span>
             </legend>
 
-            {OPERATIONS_OFFICER_ROLES.map((role) => (
-              <label key={role} className="flex items-start gap-3 text-sm">
-                <input
-                  type="radio"
-                  name="operationsRole"
-                  value={role}
-                  className="mt-1"
-                  checked={selectedRole === role}
-                  onChange={() => setSelectedRole(role)}
-                  required
-                />
-                <span>{role}</span>
-              </label>
-            ))}
+            {OPERATIONS_OFFICER_ROLES.map((role) => {
+              const isClosed = CLOSED_OPERATIONS_ROLES.has(role);
+              return (
+                <label key={role} className={`flex items-start gap-3 text-sm ${isClosed ? "opacity-50" : ""}`}>
+                  <input
+                    type="radio"
+                    name="operationsRole"
+                    value={role}
+                    className="mt-1"
+                    checked={selectedRole === role}
+                    onChange={() => setSelectedRole(role)}
+                    required={!isClosed}
+                    disabled={isClosed}
+                  />
+                  <span>{role}{isClosed ? " (Closed)" : ""}</span>
+                </label>
+              );
+            })}
           </fieldset>
 
           {selectedRole && (
