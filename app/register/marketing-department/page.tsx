@@ -29,6 +29,7 @@ const ROLE_DESCRIPTIONS: Record<MarketingRole, string> = {
 const CLOSED_MARKETING_ROLES = new Set<string>([
   "Chief Marketing Officer",
   "Vice Chief Marketing Officer",
+  "Content Strategist & Video Director"
 ]);
 
 const MARKETING_QUESTIONS_BY_ROLE: Record<MarketingRole, readonly string[]> = {

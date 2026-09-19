@@ -36,6 +36,7 @@ const CLOSED_OPERATIONS_ROLES = new Set<string>([
   "Registration and Access Coordinators",
   "Technical Coordinators",
   "Media Documentation Officers",
+  "Logistics and Resource Coordinator",
 ]);
 
 const OPERATIONS_QUESTIONS_BY_ROLE: Record<OperationsRole, readonly string[]> = {
