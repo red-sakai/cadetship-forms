@@ -38,7 +38,11 @@ const FINANCE_QUESTIONS_BY_ROLE: Record<FinanceRole, readonly string[]> = {
   ],
 };
 
-
+const CLOSED_FINANCE_ROLES = new Set<string>([
+  "Chief Finance Officer",
+  "Vice Chief Finance Officer",
+  "Auditor",
+]);
 
 export default function FinanceDepartmentPage() {
   const router = useRouter();
@@ -158,20 +162,24 @@ export default function FinanceDepartmentPage() {
               What position would you like to apply for? <span className="text-rose-400">*</span>
             </legend>
 
-            {FINANCE_OFFICER_ROLES.map((role) => (
-              <label key={role} className="flex items-start gap-3 text-sm">
-                <input
-                  type="radio"
-                  name="financeRole"
-                  value={role}
-                  className="mt-1"
-                  checked={selectedRole === role}
-                  onChange={() => setSelectedRole(role)}
-                  required
-                />
-                <span>{role}</span>
-              </label>
-            ))}
+            {FINANCE_OFFICER_ROLES.map((role) => {
+              const isClosed = CLOSED_FINANCE_ROLES.has(role);
+              return (
+                <label key={role} className={`flex items-start gap-3 text-sm ${isClosed ? "opacity-50" : ""}`}>
+                  <input
+                    type="radio"
+                    name="financeRole"
+                    value={role}
+                    className="mt-1"
+                    checked={selectedRole === role}
+                    onChange={() => setSelectedRole(role)}
+                    required={!isClosed}
+                    disabled={isClosed}
+                  />
+                  <span>{role}{isClosed ? " (Closed)" : ""}</span>
+                </label>
+              );
+            })}
           </fieldset>
 
           {selectedRole && (

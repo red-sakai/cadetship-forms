@@ -5,6 +5,21 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 
+const DEPARTMENTS = [
+  "Technology Department",
+  "Operations Department",
+  "Creatives Department",
+  "Marketing Department",
+  "Relations Department",
+  "Administrative Department",
+  "Executive Department",
+  "Finance Department",
+] as const;
+
+const CLOSED_DEPARTMENTS = new Set<string>([
+  "Finance Department",
+]);
+
 const registerSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required"),
   lastName: z.string().trim().min(1, "Last name is required"),
@@ -77,7 +92,11 @@ const registerSchema = z.object({
       }
     }, "Please provide a valid Google Drive link for your COR"),
   collegeCampus: z.string().trim().min(1, "College or campus is required"),
-  membershipType: z.string().trim().min(1, "Department is required"),
+  membershipType: z
+    .string()
+    .trim()
+    .min(1, "Department is required")
+    .refine((val) => !CLOSED_DEPARTMENTS.has(val), "This department is currently closed"),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -137,7 +156,13 @@ function RegisterFormPage() {
     document.cookie = `${encodeURIComponent(`${COOKIE_PREFIX}${field}`)}=${encodeURIComponent(value)}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; samesite=lax`;
   };
 
-  const getDefaultValue = (field: keyof RegisterFormValues) => initialValues[field] ?? "";
+  const getDefaultValue = (field: keyof RegisterFormValues) => {
+    const value = initialValues[field] ?? "";
+    if (field === "membershipType" && CLOSED_DEPARTMENTS.has(value)) {
+      return "";
+    }
+    return value;
+  };
 
   const validateField = (field: keyof RegisterFormValues, value: string) => {
     const result = registerSchema.shape[field].safeParse(value);
@@ -505,14 +530,14 @@ function RegisterFormPage() {
                 <option value="" disabled>
                   Select department
                 </option>
-                <option value="Technology Department">Technology Department</option>
-                <option value="Operations Department">Operations Department</option>
-                <option value="Creatives Department">Creatives Department</option>
-                <option value="Marketing Department">Marketing Department</option>
-                <option value="Relations Department">Relations Department</option>
-                <option value="Administrative Department">Administrative Department</option>
-                <option value="Executive Department">Executive Department</option>
-                <option value="Finance Department">Finance Department</option>
+                {DEPARTMENTS.map((department) => {
+                  const isClosed = CLOSED_DEPARTMENTS.has(department);
+                  return (
+                    <option key={department} value={department} disabled={isClosed}>
+                      {department}{isClosed ? " (Closed)" : ""}
+                    </option>
+                  );
+                })}
               </select>
               {errors.membershipType && <p className="text-xs text-rose-400">{errors.membershipType}</p>}
             </label>
