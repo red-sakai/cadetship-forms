@@ -40,6 +40,11 @@ const COMMUNITY_ROLES: readonly CommunityRole[] = [
   "Community Member",
 ];
 
+const CLOSED_RELATIONS_ROLES = new Set<string>([
+  "Sponsors Lead",
+  "Sponsors Co-Lead",
+]);
+
 const ROLE_DESCRIPTIONS: Record<RelationsRole, string> = {
   "Community Partnership Lead":
     "Responsible for establishing and maintaining professional relationships between Cisco NetConnect PUP - Manila and other student organizations, academic communities, and relevant external groups. Identifies potential organizations for partnership, initiates communication, coordinates collaborative opportunities, and facilitates activities that strengthen the presence and network of Cisco NetConnect PUP - Manila within the student community.",
@@ -250,20 +255,24 @@ export default function RelationsDepartmentPage() {
                 What position would you like to apply for? <span className="text-rose-400">*</span>
               </legend>
 
-              {availableRoles.map((role) => (
-                <label key={role} className="flex items-start gap-3 text-sm">
-                  <input
-                    type="radio"
-                    name="relationsRole"
-                    value={role}
-                    className="mt-1"
-                    checked={selectedRole === role}
-                    onChange={() => setSelectedRole(role)}
-                    required
-                  />
-                  <span>{role}</span>
-                </label>
-              ))}
+              {availableRoles.map((role) => {
+                const isClosed = CLOSED_RELATIONS_ROLES.has(role);
+                return (
+                  <label key={role} className={`flex items-start gap-3 text-sm ${isClosed ? "opacity-50" : ""}`}>
+                    <input
+                      type="radio"
+                      name="relationsRole"
+                      value={role}
+                      className="mt-1"
+                      checked={selectedRole === role}
+                      onChange={() => setSelectedRole(role)}
+                      required={!isClosed}
+                      disabled={isClosed}
+                    />
+                    <span>{role}{isClosed ? " (Closed)" : ""}</span>
+                  </label>
+                );
+              })}
             </fieldset>
           )}
 
