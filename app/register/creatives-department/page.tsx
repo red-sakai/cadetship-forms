@@ -16,6 +16,11 @@ const CREATIVES_OFFICER_ROLES = [
 
 type CreativesRole = (typeof CREATIVES_OFFICER_ROLES)[number];
 
+const CLOSED_CREATIVES_ROLES = new Set<string>([
+  "Graphic Designers",
+  "Photographer/Videographer",
+]);
+
 const ROLE_DESCRIPTIONS: Record<CreativesRole, string> = {
   "Video Editors":
     "Handle the post-production process of videos, from cutting and sequencing clips to adding effects, audio, and graphics. Their work brings captured footage to life, creating engaging video content for our audience.",
@@ -176,20 +181,24 @@ export default function CreativesDepartmentPage() {
               What position would you like to apply for? <span className="text-rose-400">*</span>
             </legend>
 
-            {CREATIVES_OFFICER_ROLES.map((role) => (
-              <label key={role} className="flex items-start gap-3 text-sm">
-                <input
-                  type="radio"
-                  name="creativesRole"
-                  value={role}
-                  className="mt-1"
-                  checked={selectedRole === role}
-                  onChange={() => setSelectedRole(role)}
-                  required
-                />
-                <span>{role}</span>
-              </label>
-            ))}
+            {CREATIVES_OFFICER_ROLES.map((role) => {
+              const isClosed = CLOSED_CREATIVES_ROLES.has(role);
+              return (
+                <label key={role} className={`flex items-start gap-3 text-sm ${isClosed ? "opacity-50" : ""}`}>
+                  <input
+                    type="radio"
+                    name="creativesRole"
+                    value={role}
+                    className="mt-1"
+                    checked={selectedRole === role}
+                    onChange={() => setSelectedRole(role)}
+                    required={!isClosed}
+                    disabled={isClosed}
+                  />
+                  <span>{role}{isClosed ? " (Closed)" : ""}</span>
+                </label>
+              );
+            })}
           </fieldset>
 
           {selectedRole && (
