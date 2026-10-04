@@ -17,6 +17,14 @@ const ADMINISTRATIVE_OFFICER_ROLES = [
 
 type AdministrativeRole = (typeof ADMINISTRATIVE_OFFICER_ROLES)[number];
 
+const CLOSED_ADMINISTRATIVE_ROLES = new Set<string>([
+  "Secretariat Officers",
+  "Membership Officers",
+  "Internal Operations Officers",
+  "Administrative Systems Officers",
+  "Events & Records Officers",
+]);
+
 const ROLE_DESCRIPTIONS: Record<AdministrativeRole, string> = {
   "Secretariat Officers":
     "Manages official documentation, meetings, correspondence, and organizational records. Prepares agendas and materials for meetings, records and prepares minutes of meetings, maintains official meeting records, documents important organizational decisions and directives, prepares administrative reports and documentation, maintains official administrative templates, ensures important documents are properly filed and accessible, assists in preparing official letters, memoranda, and correspondence, maintains historical and institutional documentation, and organizes and maintains CNCP's documentation archive.",
@@ -182,20 +190,24 @@ export default function AdministrativeDepartmentPage() {
               What position would you like to apply for? <span className="text-rose-400">*</span>
             </legend>
 
-            {ADMINISTRATIVE_OFFICER_ROLES.map((role) => (
-              <label key={role} className="flex items-start gap-3 text-sm">
-                <input
-                  type="radio"
-                  name="administrativeRole"
-                  value={role}
-                  className="mt-1"
-                  checked={selectedRole === role}
-                  onChange={() => setSelectedRole(role)}
-                  required
-                />
-                <span>{role}</span>
-              </label>
-            ))}
+            {ADMINISTRATIVE_OFFICER_ROLES.map((role) => {
+              const isClosed = CLOSED_ADMINISTRATIVE_ROLES.has(role);
+              return (
+                <label key={role} className={`flex items-start gap-3 text-sm ${isClosed ? "opacity-50" : ""}`}>
+                  <input
+                    type="radio"
+                    name="administrativeRole"
+                    value={role}
+                    className="mt-1"
+                    checked={selectedRole === role}
+                    onChange={() => setSelectedRole(role)}
+                    required={!isClosed}
+                    disabled={isClosed}
+                  />
+                  <span>{role}{isClosed ? " (Closed)" : ""}</span>
+                </label>
+              );
+            })}
           </fieldset>
 
           {selectedRole && (

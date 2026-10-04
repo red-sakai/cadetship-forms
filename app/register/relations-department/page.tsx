@@ -43,6 +43,9 @@ const COMMUNITY_ROLES: readonly CommunityRole[] = [
 const CLOSED_RELATIONS_ROLES = new Set<string>([
   "Sponsors Lead",
   "Sponsors Co-Lead",
+  "Community Partnership Co-Lead",
+  "Membership Lead",
+  "Membership Co-Lead",
 ]);
 
 const ROLE_DESCRIPTIONS: Record<RelationsRole, string> = {
