@@ -21,6 +21,7 @@ const CLOSED_DEPARTMENTS = new Set<string>([
   "Operations Department",
   "Marketing Department",
   "Executive Department",
+  "Administrative Department",
 ]);
 
 const registerSchema = z.object({
