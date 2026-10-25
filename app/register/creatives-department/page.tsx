@@ -17,7 +17,11 @@ const CREATIVES_OFFICER_ROLES = [
 type CreativesRole = (typeof CREATIVES_OFFICER_ROLES)[number];
 
 const CLOSED_CREATIVES_ROLES = new Set<string>([
+  "Video Editors",
+  "Animators",
+  "Photographer/Videographer",
   "Graphic Designers",
+  "Illustrators",
 ]);
 
 const ROLE_DESCRIPTIONS: Record<CreativesRole, string> = {

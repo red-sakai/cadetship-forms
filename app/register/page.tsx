@@ -17,6 +17,7 @@ const DEPARTMENTS = [
 ] as const;
 
 const CLOSED_DEPARTMENTS = new Set<string>([
+  "Technology Department",
   "Finance Department",
   "Operations Department",
   "Marketing Department",

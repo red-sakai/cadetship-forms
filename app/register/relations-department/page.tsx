@@ -43,9 +43,13 @@ const COMMUNITY_ROLES: readonly CommunityRole[] = [
 const CLOSED_RELATIONS_ROLES = new Set<string>([
   "Sponsors Lead",
   "Sponsors Co-Lead",
+  "Community Partnership Lead",
   "Community Partnership Co-Lead",
+  "Engagement Lead",
+  "Engagement Co-Lead",
   "Membership Lead",
   "Membership Co-Lead",
+  "Community Member",
 ]);
 
 const ROLE_DESCRIPTIONS: Record<RelationsRole, string> = {
@@ -234,7 +238,7 @@ export default function RelationsDepartmentPage() {
             </legend>
 
             {RELATIONS_TEAMS.map((team) => (
-              <label key={team} className="flex items-start gap-3 text-sm">
+              <label key={team} className="flex items-start gap-3 text-sm opacity-50">
                 <input
                   type="radio"
                   name="relationsTeam"
@@ -245,9 +249,10 @@ export default function RelationsDepartmentPage() {
                     setSelectedTeam(team);
                     setSelectedRole("");
                   }}
-                  required
+                  required={false}
+                  disabled
                 />
-                <span>{team}</span>
+                <span>{team} (Closed)</span>
               </label>
             ))}
           </fieldset>

@@ -20,6 +20,7 @@ type AdministrativeRole = (typeof ADMINISTRATIVE_OFFICER_ROLES)[number];
 const CLOSED_ADMINISTRATIVE_ROLES = new Set<string>([
   "Secretariat Officers",
   "Membership Officers",
+  "Institutional Affairs Officers",
   "Internal Operations Officers",
   "Administrative Systems Officers",
   "Events & Records Officers",

@@ -17,6 +17,12 @@ const TECHNOLOGY_ROLES: readonly TechnologyRole[] = [
   "Developer Network Cadet",
 ];
 
+const CLOSED_TECHNOLOGY_ROLES = new Set<string>([
+  "Enterprise Networking Cadet",
+  "Cybersecurity Operations Cadet",
+  "Developer Network Cadet",
+]);
+
 const ROLE_DESCRIPTIONS: Record<TechnologyRole, string> = {
   "Enterprise Networking Cadet":
     "Focuses on developing practical knowledge and skills aligned with the Cisco CCNA curriculum, particularly in network fundamentals, network access, IP connectivity, IP services, security fundamentals, and basic network automation. Cadets gain hands-on experience through network simulations, laboratories, configuration exercises, and technical projects.",
@@ -152,20 +158,24 @@ export default function TechnologyDepartmentPage() {
               What cadetship track would you like to apply for? <span className="text-rose-400">*</span>
             </legend>
 
-            {TECHNOLOGY_ROLES.map((role) => (
-              <label key={role} className="flex items-start gap-3 text-sm">
-                <input
-                  type="radio"
-                  name="technologyRole"
-                  value={role}
-                  className="mt-1"
-                  checked={selectedRole === role}
-                  onChange={() => setSelectedRole(role)}
-                  required
-                />
-                <span>{role}</span>
-              </label>
-            ))}
+            {TECHNOLOGY_ROLES.map((role) => {
+              const isClosed = CLOSED_TECHNOLOGY_ROLES.has(role);
+              return (
+                <label key={role} className={`flex items-start gap-3 text-sm ${isClosed ? "opacity-50" : ""}`}>
+                  <input
+                    type="radio"
+                    name="technologyRole"
+                    value={role}
+                    className="mt-1"
+                    checked={selectedRole === role}
+                    onChange={() => setSelectedRole(role)}
+                    required={!isClosed}
+                    disabled={isClosed}
+                  />
+                  <span>{role}{isClosed ? " (Closed)" : ""}</span>
+                </label>
+              );
+            })}
           </fieldset>
 
           {selectedRole && (

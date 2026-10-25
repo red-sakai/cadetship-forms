@@ -33,6 +33,8 @@ const ROLE_DESCRIPTIONS: Record<OperationsRole, string> = {
 };
 
 const CLOSED_OPERATIONS_ROLES = new Set<string>([
+  "Program Managers",
+  "Hosts",
   "Registration and Access Coordinators",
   "Technical Coordinators",
   "Media Documentation Officers",
